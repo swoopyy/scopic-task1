@@ -10,8 +10,8 @@ import FormGroup from 'react-bootstrap/lib/FormGroup';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import FormControl from 'react-bootstrap/lib/FormControl';
 import Button from 'react-bootstrap/lib/Button';
+import DatePicker from 'react-bootstrap-date-picker';
 
-import dateformat from 'dateformat';
 
 import './ProductForm.css';
 
@@ -37,7 +37,8 @@ class ProductForm extends Component {
         initialValues: PropTypes.obj,
         validationButtonName: PropTypes.string,
         readonly: PropTypes.bool,
-        onSubmit: PropTypes.func,
+        edit: PropTypes.func,
+        add: PropTypes.func
     };
 
     constructor(props) {
@@ -48,7 +49,8 @@ class ProductForm extends Component {
     _getValidationState = field => {
         if (this.props.readonly) {
             return null;
-        } else if (field.meta.error) {
+        }
+        if (field.meta.error) {
             return "error"
         } else {
             return "success"
@@ -70,6 +72,18 @@ class ProductForm extends Component {
         );
     };
 
+    RenderDatePicker = field => {
+        return (
+            <FormGroup controlId={field.input.name} validationState={this._getValidationState(field)}>
+                <ControlLabel>{field.label}</ControlLabel>
+                <DatePicker
+                    disabled={field.readOnly}
+                    value={field.input.value}
+                    onChange={field.input.onChange}/>
+            </FormGroup>
+        );
+    }
+
     _makeReadonlyObj = readonly => {
         let readonlyObj = {};
         if (readonly) {
@@ -80,41 +94,48 @@ class ProductForm extends Component {
         return readonlyObj;
     };
 
+
+    submitProduct = values => {
+        let oldId = this.props.initialValues.id;
+        const {edit, add} = this.props;
+        let product = {
+            ...values,
+            creationDate: new Date(values.creationDate),
+        }
+        if (edit) {
+            edit(oldId, product);
+        } else if (add) {
+            add(product);
+        }
+        this._back();
+    }
+
     _back = () => {
         browserHistory.push('/');
         this.props.productForm.resetProductToShow();
     };
 
-    submitProduct = values => {
-        let product = {
-            ...values,
-            id: this.props.initialValues.id,
-            creationDate: this.props.initialValues.creationDate,
-        }
-        this.props.onSubmit(product);
-        this._back();
-    }
-
     render() {
+        console.log(this.props);
         const {handleSubmit, readonly, validationButtonName} = this.props;
         let readonlyObj = this._makeReadonlyObj(readonly);
         return (
             <div className="wrapper">
                 <form onSubmit={handleSubmit(this.submitProduct)} className="product-form">
-                    {readonly && <Field
+                    <Field
                         type="text"
                         name="id"
                         label="Id"
                         component={this.RenderInput}
                         {...readonlyObj}
-                    />}
-                    {readonly && <Field
+                    />
+                   <Field
                         type="text"
                         label="Creation Date"
                         name="creationDate"
-                        component={this.RenderInput}
+                        component={this.RenderDatePicker}
                         {...readonlyObj}
-                    />}
+                    />
                     <Field
                         type="text"
                         label="Price"
@@ -161,10 +182,18 @@ ProductForm = reduxForm({
 
 export default connect(
     state => {
-        return {
-            initialValues: {
-                ...state.default.productToShow,
-                creationDate: dateformat(state.default.creationDate, "mediumDate"),
+        if (state.default.productToShow) {
+            return {
+                initialValues: {
+                    ...state.default.productToShow,
+                    creationDate: state.default.productToShow.creationDate.toISOString(),
+                },
+                products: state.default.products,
+            };
+        } else {
+            return {
+                initialValues: null,
+                products: state.default.products,
             }
         }
     },
