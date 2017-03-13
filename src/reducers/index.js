@@ -108,5 +108,10 @@ export default function products(state=initialState, action = {}) {
     default:
       return state;
   }
+        case RESET_PRODUCT_TO_SHOW:
+            console.log("PRODUCT TO SHOW");
+            return {
+                ...state,
+                productToShow: null,
 
 }

@@ -41,3 +41,10 @@ export function showProduct(product_id) {
     product_id
   }
 }
+
+export function resetProductToShow() {
+    return {
+        type: RESET_PRODUCT_TO_SHOW,
+    };
+}
+
