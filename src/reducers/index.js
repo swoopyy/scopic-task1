@@ -67,10 +67,10 @@ function deleteProductById(id, products) {
     return out;
 }
 
-function updateProduct(product, products) {
+function updateProduct(oldId, product, products) {
     var out = [];
     for (var i = 0; i < products.length; ++i) {
-        if (products[i].id === product.id) {
+        if (products[i].id === oldId) {
             out[i] = product;
         } else {
             out[i] = products[i];
@@ -99,7 +99,7 @@ export default function products(state = initialState, action = {}) {
         case UPDATE_PRODUCT:
             return {
                 ...state,
-                products: updateProduct(action.product, state.products),
+                products: updateProduct(action.oldId, action.product, state.products),
             }
         case EDIT_PRODUCT:
             return {
@@ -112,7 +112,6 @@ export default function products(state = initialState, action = {}) {
                 productToShow: findProductById(action.product_id, state.products),
             }
         case RESET_PRODUCT_TO_SHOW:
-            console.log("PRODUCT TO SHOW");
             return {
                 ...state,
                 productToShow: null,

@@ -12,8 +12,6 @@ import Button from 'react-bootstrap/lib/Button';
 import { addProduct } from '../../actions/index';
 import './ProductList.css';
 
-
-
 class ProductList extends Component {
 
   static propTypes = {

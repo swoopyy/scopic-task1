@@ -29,10 +29,11 @@ export function saveProduct(product) {
     };
 }
 
-export function updateProduct(product) {
+export function updateProduct(oldId, product) {
     return {
         type: UPDATE_PRODUCT,
         product,
+        oldId
     }
 }
 

@@ -12,7 +12,7 @@ class ProductAppender extends Component {
       <div className="product-appender">
         <ProductForm
           validationButtonName="Add"
-          onSubmit={this.props.productAppender.saveProduct}
+          add={this.props.productAppender.saveProduct}
         />
       </div>
     );

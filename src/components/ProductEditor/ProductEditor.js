@@ -12,7 +12,7 @@ class ProductEditor extends Component {
           <div className="product-editor">
             <ProductForm
                 validationButtonName="Edit"
-                onSubmit={this.props.productEditor.updateProduct}
+                edit={this.props.productEditor.updateProduct}
             />
           </div>
         );
