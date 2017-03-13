@@ -1,0 +1,14 @@
+.product-list {
+   display: flex;
+   flex: 1;
+   flex-direction: column;
+   flex-wrap: wrap;
+   justify-content: center;
+   align-items: center;
+}
+
+.add-product {
+   display: flex;
+   align-items: flex-end;
+   flex-direction: column;
+}

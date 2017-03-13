@@ -1,0 +1,22 @@
+.product-form {
+    width: 400px;
+}
+
+.wrapper {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttons-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+}
+
+.button {
+    margin-left: 10px;
+}
