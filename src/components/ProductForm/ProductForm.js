@@ -2,9 +2,9 @@ import React, {PropTypes, Component} from 'react';
 import {render} from 'react-dom';
 import {Field, reduxForm} from 'redux-form';
 import {browserHistory} from 'react-router';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { resetProductToShow } from '../../actions/index'
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {resetProductToShow} from '../../actions/index'
 
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
@@ -60,10 +60,11 @@ class ProductForm extends Component {
             <FormGroup controlId={field.input.name} validationState={this._getValidationState(field)}>
                 <ControlLabel>{field.label}</ControlLabel>
                 <FormControl
+                    readOnly={field.readOnly}
                     type={field.type}
                     value={field.input.value}
                     componentClass={field.componentClass}
-                    onChange={field.input.onChange} />
+                    onChange={field.input.onChange}/>
                 <FormControl.Feedback />
             </FormGroup>
         );
@@ -101,18 +102,18 @@ class ProductForm extends Component {
             <div className="wrapper">
                 <form onSubmit={handleSubmit(this.submitProduct)} className="product-form">
                     {readonly && <Field
-                                    type="text"
-                                    name="id"
-                                    label="Id"
-                                    component={this.RenderInput}
-                                    {...readonlyObj}
+                        type="text"
+                        name="id"
+                        label="Id"
+                        component={this.RenderInput}
+                        {...readonlyObj}
                     />}
                     {readonly && <Field
-                                    type="text"
-                                    label="Creation Date"
-                                    name="creationDate"
-                                    component={this.RenderInput}
-                                    {...readonlyObj}
+                        type="text"
+                        label="Creation Date"
+                        name="creationDate"
+                        component={this.RenderInput}
+                        {...readonlyObj}
                     />}
                     <Field
                         type="text"
@@ -139,9 +140,9 @@ class ProductForm extends Component {
                     <div className="buttons-wrapper">
                         <Button className="button" onClick={this._back}>Back</Button>
                         {!readonly &&
-                            <Button className="button" type="submit">
-                                {validationButtonName}
-                            </Button>
+                        <Button className="button" type="submit">
+                            {validationButtonName}
+                        </Button>
                         }
                     </div>
                 </form>
