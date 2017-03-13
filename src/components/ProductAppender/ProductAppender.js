@@ -1,19 +1,27 @@
 import React, { PropTypes, Component} from 'react';
 import { render } from 'react-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-export default class ProductAppender extends Component {
-  static propTypes = {
-    id: PropTypes.string,
-    price: PropTypes.int,
-    name: PropTypes.string,
-    description: PropTypes.string,
-    creationDate: PropTypes.date,
-  }
+import { saveProduct } from '../../actions/index'
+import ProductForm from '../ProductForm/ProductForm';
 
+class ProductAppender extends Component {
   render() {
     return (
       <div className="product-appender">
+        <ProductForm
+          validationButtonName="Add"
+          onSubmit={this.props.productAppender.saveProduct}
+        />
       </div>
     );
   }
 }
+
+export default connect(
+    state => state,
+    (dispatch) => ({
+        productAppender: bindActionCreators({saveProduct}, dispatch),
+    }),
+)(ProductAppender);
