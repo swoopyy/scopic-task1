@@ -1,24 +1,26 @@
 import React, { PropTypes, Component} from 'react';
 import { render } from 'react-dom';
-import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { showProduct, editProduct, deleteProduct } from '../../actions/index';
+
 import Button from 'react-bootstrap/lib/Button';
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
-import style from './Product.scss'
+import  './Product.css'
 import { browserHistory } from 'react-router';
-import {editProduct, deleteProduct, showProduct, addProduct} from '../../actions/index'
-import { connect } from 'react-redux'
 
 
-export default class Product extends Component {
+
+class Product extends Component {
   static propTypes = {
-    id: PropTypes.string,
-    price: PropTypes.int,
-    name: PropTypes.string,
-    description: PropTypes.string,
-    creationDate: PropTypes.date,
-    deleteProduct: PropTypes.func,
-    editProduct: PropTypes.func,
-    saveProduct: PropTypes.func,
+      id: PropTypes.string,
+      price: PropTypes.int,
+      name: PropTypes.string,
+      description: PropTypes.string,
+      creationDate: PropTypes.date,
+      deleteProduct: PropTypes.func,
+      editProduct: PropTypes.func,
+      showProduct: PropTypes.func,
   }
 
   invokeCommand = (command, id, link)  => {
@@ -29,12 +31,11 @@ export default class Product extends Component {
   }
 
   render() {
-    console.log("Product Props", this.props);
-    const { id, price, name, description, creationDate } = this.props;
-    const { showProduct, deleteProduct, editProduct } = this.props;
+    const { id, } = this.props;
+    const { showProduct, deleteProduct, editProduct } = this.props.productActions;
     return (
-      <div>
-        <h3>{this.props.name}</h3>
+      <div className="product">
+        <h4>{this.props.name}</h4>
         <ButtonToolbar>
           <Button bsStyle="info" onClick={() => this.invokeCommand(showProduct, id, '/info')}>Info</Button>
           <Button bsStyle="success" onClick={() => this.invokeCommand(editProduct, id, '/edit')}>Edit</Button>
@@ -44,3 +45,10 @@ export default class Product extends Component {
     );
   }
 }
+
+export default connect(
+    state => {return  {...state.default}},
+    (dispatch) => ({
+        productActions: bindActionCreators({editProduct, deleteProduct, showProduct}, dispatch),
+    }),
+)(Product);
