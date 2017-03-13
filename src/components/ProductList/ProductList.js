@@ -1,41 +1,48 @@
 import React, { PropTypes, Component } from 'react';
 import { render } from 'react-dom';
-import ListGroup from 'react-bootstrap/lib/ListGroup';
 import { connect } from 'react-redux';
-import {editProduct, deleteProduct, showProduct, addProduct} from '../../actions/index'
+import { bindActionCreators } from 'redux';
+import { browserHistory } from 'react-router';
+
+import ListGroup from 'react-bootstrap/lib/ListGroup';
 import Product from '../Product/Product';
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
-import {bindActionCreators} from 'redux';
+import Button from 'react-bootstrap/lib/Button';
+
+import { addProduct } from '../../actions/index';
+import './ProductList.css';
+
+
 
 class ProductList extends Component {
 
   static propTypes = {
-    addProduct: PropTypes.func,
     products: PropTypes.array,
-  }
+  };
 
   render() {
-    const { products, productActions }  = this.props;
+    const { products }  = this.props;
     return  (
       <div className="product-list">
-        <h1>Product List</h1>
-        <ListGroup>
-          {products.map((product, index) =>
-            <ListGroupItem>
-              <Product
-                {...productActions}
-                {...product}
-                key={index} />
-            </ListGroupItem> )}
-        </ListGroup>
+          <h1>Product List</h1>
+          <div>
+              <ListGroup>
+                {products.map((product, index) =>
+                  <ListGroupItem>
+                    <Product
+                      {...product}
+                      key={index} />
+                  </ListGroupItem> )}
+              </ListGroup>
+              <div className="add-product">
+                  <Button onClick={() => {browserHistory.push('/add'); }}>Add Product</Button>
+              </div>
+          </div>
       </div>
     );
   }
 }
 
 export default connect(
-  state => {return  {products: state.default.products}},
-  (dispatch) => ({
-    productActions: bindActionCreators({editProduct, deleteProduct, showProduct}, dispatch),
-  }),
+  state => {return  {...state.default}},
 )(ProductList);
