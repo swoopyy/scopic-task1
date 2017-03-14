@@ -46,7 +46,13 @@ var initialState = {
             creationDate: new Date(),
         },
     ],
-    productToShow: null,
+    productToShow: {
+        id: uuidV1(),
+        price: "",
+        description: "",
+        name: "",
+        creationDate: new Date(),
+    },
 };
 
 function findProductById(id, products) {
@@ -86,36 +92,42 @@ export default function products(state = initialState, action = {}) {
                 ...action.product,
                 id: uuidV1(),
                 creationDate: new Date(),
-            }
+            };
             return {
                 ...state,
                 products: [...state.products, product],
-            }
+            };
         case DELETE_PRODUCT:
             return {
                 ...state,
                 products: deleteProductById(action.product_id, state.products)
-            }
+            };
         case UPDATE_PRODUCT:
             return {
                 ...state,
                 products: updateProduct(action.oldId, action.product, state.products),
-            }
+            };
         case EDIT_PRODUCT:
             return {
                 ...state,
                 productToShow: findProductById(action.product_id, state.products),
-            }
+            };
         case SHOW_PRODUCT:
             return {
                 ...state,
                 productToShow: findProductById(action.product_id, state.products),
-            }
+            };
         case RESET_PRODUCT_TO_SHOW:
             return {
                 ...state,
-                productToShow: null,
-            }
+                productToShow: {
+                    id: uuidV1(),
+                    price: "",
+                    description: "",
+                    name: "",
+                    creationDate: new Date(),
+                },
+            };
         default:
             return state;
     }
