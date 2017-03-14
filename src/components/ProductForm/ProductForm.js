@@ -15,12 +15,31 @@ import DatePicker from 'react-bootstrap-date-picker';
 
 import './ProductForm.css';
 
-const validate = values => {
+const isIdInProducts = (id, products) => {
+    for (var i = 0; i < products.length; ++i) {
+        if (products[i].id === id) {
+            return true;
+        }
+    }
+    return false;
+};
+
+const validate = (values, props) => {
     let errors = {};
+    if (!values.id) {
+        errors.id = "Required";
+    }
+    if (values.id !== props.initialValues.id
+        && isIdInProducts(values.id, props.products)) {
+        errors.id = "Already exists";
+    }
+    if (!values.creationDate) {
+        errors.creationDate = "Required";
+    }
     if (!values.price) {
         errors.price = "Required";
     } else if (isNaN(values.price)) {
-        errors.price = "NaN";
+        errors.price = "Invalid";
     }
     if (!values.name) {
         errors.name = "Required";
@@ -62,7 +81,7 @@ class ProductForm extends Component {
             <FormGroup controlId={field.input.name} validationState={this._getValidationState(field)}>
                 <ControlLabel>{field.label}</ControlLabel>
                 <FormControl
-                    readOnly={field.readOnly}
+                    disabled={field.disabled}
                     type={field.type}
                     value={field.input.value}
                     componentClass={field.componentClass}
@@ -77,23 +96,12 @@ class ProductForm extends Component {
             <FormGroup controlId={field.input.name} validationState={this._getValidationState(field)}>
                 <ControlLabel>{field.label}</ControlLabel>
                 <DatePicker
-                    disabled={field.readOnly}
+                    disabled={field.disabled}
                     value={field.input.value}
                     onChange={field.input.onChange}/>
             </FormGroup>
         );
-    }
-
-    _makeReadonlyObj = readonly => {
-        let readonlyObj = {};
-        if (readonly) {
-            readonlyObj = {
-                readOnly: true,
-            };
-        }
-        return readonlyObj;
     };
-
 
     submitProduct = values => {
         let oldId = this.props.initialValues.id;
@@ -101,14 +109,14 @@ class ProductForm extends Component {
         let product = {
             ...values,
             creationDate: new Date(values.creationDate),
-        }
+        };
         if (edit) {
             edit(oldId, product);
         } else if (add) {
             add(product);
         }
         this._back();
-    }
+    };
 
     _back = () => {
         browserHistory.push('/');
@@ -116,9 +124,7 @@ class ProductForm extends Component {
     };
 
     render() {
-        console.log(this.props);
         const {handleSubmit, readonly, validationButtonName} = this.props;
-        let readonlyObj = this._makeReadonlyObj(readonly);
         return (
             <div className="wrapper">
                 <form onSubmit={handleSubmit(this.submitProduct)} className="product-form">
@@ -127,28 +133,28 @@ class ProductForm extends Component {
                         name="id"
                         label="Id"
                         component={this.RenderInput}
-                        {...readonlyObj}
+                        disabled={readonly}
                     />
-                   <Field
+                    <Field
                         type="text"
                         label="Creation Date"
                         name="creationDate"
                         component={this.RenderDatePicker}
-                        {...readonlyObj}
+                        disabled={readonly}
                     />
                     <Field
                         type="text"
                         label="Price"
                         name="price"
                         component={this.RenderInput}
-                        {...readonlyObj}
+                        disabled={readonly}
                     />
                     <Field
                         type="text"
                         label="Name"
                         name="name"
                         component={this.RenderInput}
-                        {...readonlyObj}
+                        disabled={readonly}
                     />
                     <Field
                         type="text"
@@ -156,7 +162,7 @@ class ProductForm extends Component {
                         name="description"
                         componentClass="textarea"
                         component={this.RenderInput}
-                        {...readonlyObj}
+                        disabled={readonly}
                     />
                     <div className="buttons-wrapper">
                         <Button className="button" onClick={this._back}>Back</Button>
@@ -175,27 +181,19 @@ class ProductForm extends Component {
 
 ProductForm = reduxForm({
     form: 'product',
-    destroyOnUnmount: false,
-    enableReinitialize: true,
+    destroyOnUnmount: true,
     validate,
 })(ProductForm);
 
 export default connect(
     state => {
-        if (state.default.productToShow) {
-            return {
-                initialValues: {
-                    ...state.default.productToShow,
-                    creationDate: state.default.productToShow.creationDate.toISOString(),
-                },
-                products: state.default.products,
-            };
-        } else {
-            return {
-                initialValues: null,
-                products: state.default.products,
-            }
-        }
+        return {
+            initialValues: {
+                ...state.default.productToShow,
+                creationDate: state.default.productToShow.creationDate.toISOString(),
+            },
+            products: state.default.products,
+        };
     },
     (dispatch) => ({
         productForm: bindActionCreators({resetProductToShow}, dispatch),
