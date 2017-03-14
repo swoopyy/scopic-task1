@@ -1,22 +1,22 @@
-import React, { PropTypes, Component} from 'react';
-import { render } from 'react-dom';
-import { connect } from 'react-redux';
+import React, {PropTypes, Component} from 'react';
+import {render} from 'react-dom';
+import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
-import { updateProduct } from '../../actions/index'
+import {updateProduct} from '../../actions/index'
 import ProductForm from '../ProductForm/ProductForm';
 
 class ProductEditor extends Component {
     render() {
         return (
-          <div className="product-editor">
-            <ProductForm
-                validationButtonName="Edit"
-                edit={this.props.productEditor.updateProduct}
-            />
-          </div>
+            <div className="product-editor">
+                <ProductForm
+                    validationButtonName="Edit"
+                    edit={this.props.productEditor.updateProduct}
+                />
+            </div>
         );
-  }
+    }
 }
 
 export default connect(
